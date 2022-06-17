@@ -86,3 +86,24 @@ while True:
     pygame.display.flip()
     clock.tick(fps)
     close_game()
+
+
+
+    # Управление
+    key = pygame.key.get_pressed()
+    if key[pygame.K_w]:
+        if dirs['W']:
+            dx, dy = 0, -1
+            dirs = {'W': True, 'S': False, 'A': True, 'D': True}
+    elif key[pygame.K_s]:
+        if dirs['S']:
+            dx, dy = 0, 1
+            dirs = {'W': False, 'S': True, 'A': True, 'D': True}
+    elif key[pygame.K_a]:
+        if dirs['A']:
+            dx, dy = -1, 0
+            dirs = {'W': True, 'S': True, 'A': True, 'D': False}
+    elif key[pygame.K_d]:
+        if dirs['D']:
+            dx, dy = 1, 0
+            dirs = {'W': True, 'S': True, 'A': False, 'D': True}
