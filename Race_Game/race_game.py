@@ -1,12 +1,12 @@
-import timeit
-
 from ursina import *
 import random
 
-# создание окна Ursina
+# конструктор приложения на ursina
 app = Ursina()
-# настройка камеры
-camera.ortographic = True
+# настройки камеры
+# ортографическая проекция камеры
+camera.orthographic = True
+# отдалённость
 camera.fov = 40
 
 # создание объекта "автомобиль"
@@ -25,63 +25,57 @@ road1 = Entity(
     scale=15,
     z=1
 )
-# создание второго объекта "дорога" путём дублирования первого объекта "дорога"
+# создание второго объекта "дорога" путём дублирования
 road2 = duplicate(road1, y=15)
 # список частей дороги
 pair = [road1, road2]
 
-# основная часть
-# добавление игровых противников NPC
+# добавление игровых противников
 enemies = []
-
 
 def newEnemy():
     val = random.uniform(-2, 2)
     new = duplicate(
         car,
         texture='assets/car3.png',
-        x=2 * val,
+        x= 2 * val,
         y=25,
         color=color.random_color(),
         rotation_z=
-        90 if val < 0
-        else -90
+            90 if val < 0
+            else -90
     )
-    # добавляем созданный объект "автомобиль" в список игровых противников NPC
+    # добавляем созданный "автомобиль" в список противников
     enemies.append(new)
     # отрисовываем объект на экране через временной интервал задержки
     invoke(newEnemy, delay=0.5)
 
-
 newEnemy()
 
 
-# движение автомобиля влево и вправо
+# основная часть игры
 def update():
+    # движение "автомобиля" влево и вправо по клавишам W,A,S,D
     car.x -= held_keys['a'] * 5 * time.dt
     car.x += held_keys['d'] * 5 * time.dt
-    car.y += held_keys['w'] * 5 * time.dt
     car.y -= held_keys['s'] * 5 * time.dt
+    car.y += held_keys['w'] * 5 * time.dt
 
     # иллюзия движения дороги
     for road in pair:
         road.y -= 6 * time.dt
         if road.y < -15:
             road.y += 30
-    # появление противников на дороге (NPC)
     for enemy in enemies:
         if enemy.x < 0:
             enemy.y -= 10 * time.dt
         else:
             enemy.y -= 5 * time.dt
-        # если координата y противника станет меньше -10,
-        # то противник скрывается с экрана игры
+        # если кооордината y противника станет меньше -10,
+        # то противник скроется с экрана
         if enemy.y < -10:
             enemies.remove(enemy)
             destroy(enemy)
-    # анализ столкновений "автомобиля игрока" с "автомобилями игровых противников"
-    if car.intersects().hit:
-        car.shake()
 
 # запуск приложения
 app.run()
